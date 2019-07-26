@@ -29,7 +29,7 @@ int main()
 	{
 		printf("\nIn child process...\nID:%d",getpid());
 		printf("\nParent process ID is:%d",getppid());
-		sleep(10);
+		sleep(5);
 		quikSort(arrQuick,0,quick-1);
 		printf("\n\nQuick Sort completed!\n");
 		for(i=0; i<quick; i++)
@@ -46,7 +46,8 @@ int main()
 		for(i=0; i<bubble; i++)
 			printf("%d  ",arrBubble[i]);
 		printf("\n");
-		wait();
+		sleep(10);
+		//wait();
 		printf("\n\nChild completed it's execution...");
 		printf("\nNow parent free to exit...\n");
 		exit(0);
