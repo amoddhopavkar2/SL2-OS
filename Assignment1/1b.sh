@@ -1,12 +1,3 @@
-#Write a program to implement an address book with options given below:
-	#1. Create address book.
-	#2. View address book.
-	#3. Insert a record.
-	#4. Search a record.
-	#5. Delete a record.
-	#6. Modify a record.
-	#7. Exit.
-
 #!/bin/sh
 while :
 do
@@ -46,10 +37,28 @@ do
 		echo "\nEnter State:\c"
 		read state
 		echo "\nEnter Pincode:\c"
-		read pin
-		echo "\nEnter Phone No:\c"
-		read phno
+		while true
+		do		
+			read pin
+			len1=$(echo -n $pin | wc -m)
+			if test $len1 -eq 6 ; then
+				break;
+			else
+				echo "\nENTER A VALID 6-DIGIT PIN!\n"
+			fi
+		done
 		
+		echo "\nEnter Phone No:\c"
+		while true
+		do
+			read phno
+			len2=$(echo -n $phno | wc -m)
+			if test $len2 -eq 10 ; then
+				break;
+			else
+				echo "\nENTER A VALID 10-DIGIT PHONE NO!\n"	
+			fi
+		done
 		echo "$name \t$add \t\t$city \t$state \t$pin \t\t$phno">>$addBook.txt
 	}
 	
@@ -63,10 +72,13 @@ do
 	{
 		echo "\nEnter a phone no to search:\c"
 		read key
-		grep -i "$key" $addBook.txt
+		grep -q "$key" $addBook.txt
 		if [ $? -ne 0 ]
 		then
 			echo "\nRECORD NOT FOUND!"
+		else
+			grep -i -w "key" $addBook.txt
+			echo "\nRECORD FOUND!"
 		fi
 	}
 	
@@ -74,33 +86,30 @@ do
 	{
 		echo "\nEnter a phone no to delete:\c"
 		read key
-		grep -i -v "$key" $addBook.txt>zzz.txt		#If record not found then copied to a new file
+		grep -q -w $key "$addBook.txt"		#If record not found 
 		if [ $? -ne 0 ]
 		then
 			echo "\nRECORD DOES NOT EXIST!"				
 		else
+			grep -i -v -w "$key" $addBook.txt>zzz.txt
+			mv zzz.txt "$addBook.txt"		#New file moved as old file
 			echo "\nRECORD DELETED SUCCESSFULLY!"
 		fi
-		
-		mv zzz.txt "$addBook.txt"						#New file moved as old file
-		
-		display 							#Display function called
 	}
 	
 	modify()								#Modify function
 	{
 		echo "\nEnter a phone no to modify the record:\c"
 		read key
-		grep -i -v "$key" $addBook.txt>zzz.txt		#If record not found then copied to a new file
+		grep -q -w $key "$addBook.txt"		#If record not found
 		if [ $? -ne 0 ]
 		then
 			echo "\nRECORD DOES NOT EXIST!"
-		fi
-		
-		mv zzz.txt "$addBook.txt"						#New file moved as old file
-		
-		insert 								#Insert function called
-		display	 							#Display function called
+		else
+			grep -i -v -q -w "$key" $addBook.txt>zzz.txt
+			mv zzz.txt "$addBook.txt"		#New file moved as old file
+			insert 							#Insert function called
+		fi 								
 	}
 
 	case "$ch" in 							#Switch case structure

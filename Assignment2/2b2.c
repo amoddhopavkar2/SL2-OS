@@ -25,6 +25,7 @@ int main(int argc, char *argv[])
 		else
 			l = mid+1;
 	}
+	
 	if(flag == 0)
 		printf("\n\nTHE NUMBER %d NOT FOUND!\n",key);
 	else

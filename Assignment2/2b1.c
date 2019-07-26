@@ -29,7 +29,8 @@ int main()
 	printf("\nSORTING THE NUMBERS...\n");
 	bubbleSort(arr,n);
 	printf("SORTING COMPLETED!\n");
-	printf("\nINVOKING FORK!\n");
+	
+	printf("\nINVOKING FORK....\n");
 	pid = fork();
 
 	if(pid == 0)
