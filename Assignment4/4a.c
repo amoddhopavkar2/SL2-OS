@@ -54,3 +54,57 @@ void *consumer(void *args) {			//Will pass no of arguments
 	}
 	pthread_exit(NULL);
 }
+
+void main() {
+	int prod,cons,init,*b;
+	pthread_t *thread1, *thread2;
+	int pShared;						//Whether semaphore is shared btwn the threads i.e = 0
+													//or shared btwn the processes i.e != 0	
+	printf("\nNumber of producers:");
+	scanf("%d",&prod);
+	printf("\nNumber of consumers:");
+	scanf("%d",&cons);
+	printf("\nSize of Bounded Buffer:");
+	scanf("%d",&n);
+
+	buffer = (int *) calloc(int(n+1), sizeof(int));		//Allocates memory to buffer & initialises it to 0
+	init = pthread_mutex_init(&mutex,NULL);				//Mutex Initialization
+	if(init != 0) {
+		printf("\nMutex Initialization failed!");
+		exit(EXIT_FAILURE);
+	}
+	
+	init = sem_init(&full,0,0);				//Semaphore Initialization
+	if(init != 0) {
+		printf("\nSemaphore Initialization failed!");
+		exit(EXIT_FAILURE);
+	}
+
+	init = sem_init(&empty,0,n);			//Semaphore Initialization
+	if(init != 0) {
+		printf("\nSemaphore Initialization failed!");
+		exit(EXIT_FAILURE);
+	}
+	thread1 = (pthread_t *) malloc(prod * sizeof(pthread_t));		//Allocates 'prod' threads
+	thread2 = (pthread_t *) malloc(cons * sizeof(pthread_t));		//Allocates 'cons' threads
+	printf("\n------------Creating Threads------------\n");
+	for(int i=0; i<prod; i++) {
+		b = &i;
+		init = pthread_create((thread1+i),NULL,producer,b);
+		if(init != 0) {
+			printf("\nThread Creation failed!");
+			exit(EXIT_FAILURE);
+		}
+	}
+
+	for(int i=0; i<cons; i++) {
+		b = &i;
+		init = pthread_create((thread2+i),NULL,consumer,b);
+		if(init != 0) {
+			printf("\nThread Creation failed!");
+			exit(EXIT_FAILURE);
+		}
+	}
+
+	
+}
