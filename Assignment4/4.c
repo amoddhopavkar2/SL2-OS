@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <sys/types.h>
-//#include <semaphore.c>
+#include <semaphore.h>
 
 int n, count=0, *buffer;
 sem_t full,empty;
@@ -23,8 +23,8 @@ int main()
 	scanf("%d",&c);
 	printf("\nSIZE OF BOUNDED BUFFER:");
 	scanf("%d",&n);
-
-	buffer = (int *) calloc((n+1)sizeof(int));
+ 
+	buffer = (int *) calloc((n+1), sizeof(int));
 
 	value = pthread_mutex_init(&m,NULL);
 	if(value != 0) 
@@ -47,8 +47,8 @@ int main()
 		exit(-1);
 	}
 
-	t1 = (pthread_t *) malloc(p*sizeof(pthread_t));
-	t2 = (pthread_t *) malloc(c*sizeof(pthread_t));
+	t1 = (pthread_t *) malloc(p * sizeof (pthread_t));
+	t2 = (pthread_t *) malloc(c * sizeof (pthread_t));
 
 	printf("\n------------ Creating Threads ------------\n");
 
