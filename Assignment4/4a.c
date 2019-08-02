@@ -10,19 +10,19 @@ int n, *buffer, count = 0;
 
 void *producer(void *args) {			//Will pass no of arguments;
 	int pos = *(int *)args;
-	while(TRUE) {
+	while(1) {
 		int sleepTime = rand()%7;
 		sleep(sleepTime);
 		sem_wait(&empty);
 		pthread_mutex_lock(&mutex);
 				//Critical Section	
-				printf("\n\nIN PRODUCER....",pos);
+				printf("\n\nIN PRODUCER....%d",pos);
 				int producerVal = rand()%222;
-				printf("\nProducer generated a value:",producerVal);
+				printf("\nProducer generated a value: %d",producerVal);
 				buffer[count] = producerVal;
 				count++;
 				sleep(1);
-				printf("\nValues in Buffer:");
+				printf("\n\nValues in Buffer: ");
 				for(int i=0; i<n; i++) {
 					printf("%d\t",buffer[i]);
 				}
@@ -34,17 +34,17 @@ void *producer(void *args) {			//Will pass no of arguments;
 
 void *consumer(void *args) {			//Will pass no of arguments
 	int pos = *(int *)args;
-	while(TRUE) {
+	while(1) {
 		int sleepTime = rand()%7;
 		sleep(sleepTime);
 		sem_wait(&full);
 		pthread_mutex_lock(&mutex);
 				//Critical Section
-				printf("\n\nIN CONSUMER....",pos);
+				printf("\n\nIN CONSUMER....%d",pos);
 				printf("\nConsumer consumes a value %d from the buffer",buffer[count-1]);
-				buffer[count-1] = NULL;
+				buffer[count-1] = 0;
 				count--;
-				printf("\nValues in Buffer:");
+				printf("\n\nValues in Buffer: ");
 				sleep(1);
 				for(int i=0; i<n; i++) {
 					printf("%d\t",buffer[i]);
@@ -67,7 +67,7 @@ void main() {
 	printf("\nSize of Bounded Buffer:");
 	scanf("%d",&n);
 
-	buffer = (int *) calloc(int(n+1), sizeof(int));		//Allocates memory to buffer & initialises it to 0
+	buffer = (int *) calloc((n+1), sizeof(int));		//Allocates memory to buffer & initialises it to 0
 	init = pthread_mutex_init(&mutex,NULL);				//Mutex Initialization
 	if(init != 0) {
 		printf("\nMutex Initialization failed!");
@@ -89,7 +89,7 @@ void main() {
 	thread2 = (pthread_t *) malloc(cons * sizeof(pthread_t));		//Allocates 'cons' threads
 	printf("\n------------Creating Threads------------\n");
 	for(int i=0; i<prod; i++) {
-		b = &i;
+		b = &i;								//Which producer is producing
 		init = pthread_create((thread1+i),NULL,producer,b);
 		if(init != 0) {
 			printf("\nThread Creation failed!");
@@ -98,7 +98,7 @@ void main() {
 	}
 
 	for(int i=0; i<cons; i++) {
-		b = &i;
+		b = &i;								//Which consumer is consuming
 		init = pthread_create((thread2+i),NULL,consumer,b);
 		if(init != 0) {
 			printf("\nThread Creation failed!");
@@ -106,5 +106,23 @@ void main() {
 		}
 	}
 
-	
+	printf("\n------------Joining Threads------------\n");
+	for(int i=0; i<prod; i++) {
+		init = pthread_join(*(thread1+i),NULL);
+		if(init != 0) {
+			printf("\nThread Joining failed!");
+			exit(EXIT_FAILURE);
+		}
+	}
+
+	for(int i=0; i<cons; i++) {
+		init = pthread_join(*(thread2+i),NULL);
+		if(init != 0) {
+			printf("\nThread Joining failed!");
+			exit(EXIT_FAILURE);
+		}
+	}
+
+	sem_destroy(&empty);
+	sem_destroy(&full);
 }
