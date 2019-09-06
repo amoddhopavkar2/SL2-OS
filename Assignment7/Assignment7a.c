@@ -20,9 +20,9 @@ int main() {
 	}
 
 	if(pid == 0) {
+		sleep(5);
 		close(fd1[1]);
 		read(fd1[0],readBuffer,sizeof(readBuffer));
-		//sleep(5);
 		printf("\nFILE '%s' IS BEING READ BY CHILD PROCESS THROUGH PIPE 1...\n",readBuffer);
 		fp = fopen(readBuffer,"r");
 		close(fd1[0]);
@@ -45,6 +45,7 @@ int main() {
 		write(fd1[1],file,(strlen(file)+1));
 		close(fd1[1]);
 		close(fd2[1]);
+		sleep(5);
 
 		printf("\nCONTENTS OF '%s' ARE RECEIVED BY THE PARENT PROCESS THROUGH PIPE 2...",file);
 		printf("\nIN PARENT PROCESS\n");
