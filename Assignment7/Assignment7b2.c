@@ -10,7 +10,7 @@
 int main() {
 	int f1 = 0, f2 = 0, i = 0, ret;
 	char readSentence[100], buffer[300];
-	int numChar = 0, numWords = 0, numLines = 0;
+	int numChar = 0, numWords = 0, numLines = 0, numLetters = 0;
 	FILE *fp;
 
 	ret = mkfifo("/home/oslab-22/33304/Assignment7/myfifo",0666);
@@ -28,7 +28,8 @@ int main() {
 
 	f1 = open("/home/oslab-22/33304/Assignment7/myfifo",O_RDONLY);
 	read(f1,readSentence,100);
-	
+
+	int w = 0;
 	for(i = 0; readSentence[i] != '\0'; i++) {
 		if((readSentence[i] == '.') || (readSentence[i] == '!') || (readSentence[i] == '?')) {
 			numLines++;
@@ -37,11 +38,17 @@ int main() {
 		if((readSentence[i] == ' ') || (readSentence[i] == ',')) {
 			numWords++;
 		}
+
+		if((readSentence[i] == ' ') || (readSentence[i] == ',') || (readSentence[i] == '.') || (readSentence[i] == '!') || (readSentence[i] == '?')) {
+			w++;
+		}
 	}
 	numChar = i-1;
+	numLetters = i-w-1;
 
 	fp = fopen("7b.txt","w");
 	fprintf(fp, "\nNO. OF CHARACTERS = %d\n",numChar);
+	fprintf(fp, "NO. OF LETTERS = %d\n",numLetters);
 	fprintf(fp, "NO. OF WORDS = %d\n",numWords+1);
 	fprintf(fp, "NO. OF LINES = %d\n",numLines);
 	fprintf(fp,"%c",EOF);
