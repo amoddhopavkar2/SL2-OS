@@ -69,7 +69,7 @@ int main()
 	printf("\nENTER THE NO OF COLUMNS IN MATRIX B:");
 	scanf("%d",&cols2);
 
-	if(cols1 != rows2)
+	while(cols1 != rows2)
 	{
 		printf("\nMATRIX MULTIPLICATION NOT POSSIBLE!\n");
 		printf("\nRE-ENTER VALID ROWS AND COLUMNS...\n");
