@@ -97,7 +97,7 @@ int main()
 		{
 			argC[0] = i;
 			argC[1] = j;
-			argC[2] = cols1;
+			argC[2] = cols2;
 			if(pthread_create(&P[i][j],NULL,mulThread,argC) != 0)
 				printf("\n\nERROR... CANNOT CREATE THREAD!");
 			else
