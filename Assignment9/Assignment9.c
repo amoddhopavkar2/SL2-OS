@@ -4,85 +4,104 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-void create(char fileName[]) {
-	int exists = access(fileName,F_OK);
-	if(exists == 0) {
-		printf("\nFILE ALREADY EXISTS!\n");
-	}
+typedef struct student {
+	int roll;
+	char name[20];
+	float marks;
+	int class;
+}Student;
+
+void createData(char dataName[]) {
+	int exists = access(dataName,F_OK);
+	if(exists == 0) 
+		printf("\nDatabase already exists!\n");
 	else {
-		int fd = open(fileName,O_CREAT);
+		int fd = open(dataName,O_CREAT);
 		if(fd < 0) {
-			printf("\nERROR IN CREATING THE FILE!\n");
+			printf("\nError in creating the database!");
+			exit(0);
 		}
-		else {
-			printf("\nFILE SUCCESSFULLY CREATED!\n");
-		}
+		else
+			printf("\nDatabase created successfully!");
 		close(fd);
 	}
 }
 
-void readFile(char fileName[]) {
-	char buffer[100];
-	int content;
-	int fd = open(fileName,O_RDONLY);
-	if(fd < 0) {
-		printf("\nERROR IN READING FROM THE FILE!\n");
+void writeData(char dataName[]) {
+	Student s;
+	printf("\nEnter Roll no:");
+	scanf("%d",&s.roll);
+	printf("\nEnter Name:");
+	scanf("%s",s.name);
+	printf("\nEnter Marks:");
+	scanf("%f",&s.marks);
+	printf("\nEnter Class:");
+	scanf("%d",&s.class);
+	
+	int fd = open(dataName,O_WRONLY | O_APPEND);
+	if(fd < 0){
+		printf("\nError in writing the record!\n");
+		exit(0);
 	}
 	else {
-		while((content = read(fd,buffer,sizeof(buffer))) > 0) {
-			printf("\nTHE CONTENTS OF THE FILE ARE: %s\n");
-		}
-		close(fd);
+		write(fd,&s,sizeof(s));
+		printf("\nRecord written successfully!\n");
 	}
+	close(fd);
 }
 
-void writeFile(char fileName[]) {
-	char buffer[100];
-	int sentence, i = 0;
-	int fd = open(fileName,O_WRONLY|O_APPEND);
+void readData(char dataName[]) {
+	Student s;
+	int fd = open(dataName,O_RDONLY);
 	if(fd < 0) {
-		printf("\nERROR IN WRITING TO THE FILE!\n");
+		printf("\nError in reading the database!");
+		exit(0);
 	}
 	else {
-		printf("\nENTER THE SENTENCE: ");
-		do {
-			scanf("%c",&buffer[i]);
-			i++;
-		} while(buffer[i] != '#');
-		buffer[i-1] = '\0';
-		//while(buffer[i] != '\0')
-			//i++;
-		//buffer[i] = '\0';
-		write(fd,buffer,i-1);
-		close(fd);
+		printf("\nRoll No \tName \tMarks \tClass\n");
+		while(read(fd,&s,sizeof(s)))
+			printf("%d \t%s \t%f \t%d",s.roll,s.name,s.marks,s.class);
 	}
+	close(fd);
 }
 
 int main() {
 	int ch;
-	char fileName[20];
-	do {
-		printf("\n1. CREATE A FILE: \n2. WRITE TO THE FILE: \n3. READ FROM THE FILE: \n4. EXIT. \n\nENTER YOUR CHOICE:");
+	Student s;
+	char dataName[20];
+	while(1) {
+		printf("\n\n---STUDENTS DATABASE IN FILES---\n");
+		printf("\n1. Create database: \n2. Insert records: \n3. Display records: \n4. Search: \n5. Modify: \n6. Delete: \n7. Exit\n\nEnter your choice:");
 		scanf("%d",&ch);
 		switch(ch) {
 			case 1:
-				printf("\nENTER THE FILE NAME:");
-				scanf("%s",fileName);
-				create(fileName);
+				printf("\nEnter database name:");
+				scanf("%s",dataName);
+				createData(dataName);
 				break;
 
 			case 2:
-				writeFile(fileName);
+				writeData(dataName);
 				break;
 
 			case 3:
-				readFile(fileName);
+				readData(dataName);
 				break;
 
 			case 4:
-				printf("\nEXITING THE PROGRAM...\n");
-				return(0);
+			break;
+
+			case 5:
+			break;
+
+			case 6:
+			break;
+
+			case 7:
+			return 0;
+
+			default:
+			printf("\n\nEnter a choice between 1 to 7!");
 		}
-	} while(ch != 4);
-	return 0;
-} 
+	}
+}
